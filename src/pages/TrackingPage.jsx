@@ -1,11 +1,43 @@
+import { useParams } from 'react-router';
+import { useEffect, useState } from 'react';
 import { Header } from '../components/Header';
 import { Link } from 'react-router';
+import axios from 'axios';
 import './TrackingPage.css';
+import dayjs from 'dayjs';
 
 
 export function TrackingPage({ cart }) {
+  const { orderId, productId } = useParams();
+  const [ order, setOrder ] = useState(null);
+
+  useEffect(() => {
+    const getOrder = async () => {
+      const response = await axios.get(`/api/orders/${orderId}?expand=products`);
+      setOrder(response.data);
+    }
+    getOrder();
+  },[orderId]);
+
+  if (!order){
+    return null;
+  }
+  
+  const currentProduct = order.products.find((product) => {
+    return product.productId === productId;
+  })
+  
+  const totalDeliveryTimeMs = currentProduct.estimatedDeliveryTimeMs - order.orderTimeMs;
+  const timePassedMs = dayjs().valueOf() - order.orderTimeMs;
+  let timePassedPercentage = ( timePassedMs / totalDeliveryTimeMs ) * 100;
+  if ( timePassedPercentage > 100 )
+    timePassedPercentage = 100;
+  
+
   return (
     <>
+      {console.log(currentProduct)}
+      {console.log(order)}
       <title>Tracking</title>
       <link rel="icon" type="image/svg+xml" href="/tracking-favicon.png" />
       <Header cart={cart}/>
@@ -17,18 +49,18 @@ export function TrackingPage({ cart }) {
           </Link>
 
           <div className="delivery-date">
-            Arriving on Monday, June 13
+            {timePassedPercentage >= 100 ? "Delivered on ":"Arriving on "} {dayjs(currentProduct.estimatedDeliveryTimeMs).format('dddd, MMMM D')}
           </div>
 
           <div className="product-info">
-            Black and Gray Athletic Cotton Socks - 6 Pairs
+            {currentProduct.product.name}
           </div>
 
           <div className="product-info">
-            Quantity: 1
+            Quantity: {currentProduct.quantity}
           </div>
 
-          <img className="product-image" src="images/products/athletic-cotton-socks-6-pairs.jpg" />
+          <img className="product-image" src={currentProduct.product.image} />
 
           <div className="progress-labels-container">
             <div className="progress-label">
@@ -43,7 +75,7 @@ export function TrackingPage({ cart }) {
           </div>
 
           <div className="progress-bar-container">
-            <div className="progress-bar"></div>
+            <div className="progress-bar" style={{width: `${timePassedPercentage}%` }}></div>
           </div>
         </div>
       </div>
