@@ -12,6 +12,8 @@ import { NotFoundPage } from './pages/NotFoundPage'
 
 
 function App() {
+  window.axios = axios;
+
   const [ cart, setCart ] = useState([]);
 
   const loadCart = async () => {
