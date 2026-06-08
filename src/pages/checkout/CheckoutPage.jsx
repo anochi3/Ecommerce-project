@@ -17,28 +17,33 @@ export function CheckoutPage({ cart, loadCart }) {
         '/api/delivery-options?expand=estimatedDeliveryTime'
       );
       setDeliveryOptions(response.data);
-
-
-      response = await axios.get('/api/payment-summary');
-      setPaymentSummary(response.data);
-
     }
 
     fetchCheckoutData();
-  }, [cart])
+  }, []);
+
+  useEffect(() => {
+    const updatePaymentSummary = async () => {
+      const response = await axios.get('/api/payment-summary');
+      setPaymentSummary(response.data);
+    }
+
+    updatePaymentSummary();
+
+  }, [cart]);
 
   return (
     <>
       <title>Checkout</title>
       <link rel="icon" type="image/svg+xml" href="/cart-favicon.png" />
-      <CheckoutHeader cart={cart}/>
+      <CheckoutHeader cart={cart} />
       <div className="checkout-page">
         <div className="page-title">Review your order</div>
 
         <div className="checkout-grid">
           <OrderSummary cart={cart} deliveryOptions={deliveryOptions} loadCart={loadCart} />
 
-          <PaymentSummary paymentSummary={paymentSummary} loadCart={loadCart}/>
+          <PaymentSummary paymentSummary={paymentSummary} loadCart={loadCart} />
         </div>
       </div>
     </>
