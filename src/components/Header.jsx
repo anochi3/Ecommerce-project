@@ -33,12 +33,18 @@ export function Header({ cart }) {
           (event) => {
             setSearchText(event.target.value);
           }
+        } onKeyDown={
+          (event) => {
+            if (event.key === 'Enter')
+              navigate(`/?search=${searchText}`)
+            else if (event.key === 'Escape')
+              setSearchText('');
+          }
         } />
 
         <button className="search-button" onClick={
           () => {
             navigate(`/?search=${searchText}`)
-            console.log(searchText);
             }
         }>
           <img className="search-icon" src="images/icons/search-icon.png" />
