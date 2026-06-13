@@ -41,8 +41,6 @@ export function TrackingPage({ cart }) {
 
   return (
     <>
-      {console.log(currentProduct)}
-      {console.log(order)}
       <title>Tracking</title>
       <link rel="icon" type="image/svg+xml" href="/tracking-favicon.png" />
       <Header cart={cart}/>
