@@ -38,7 +38,23 @@ export function CartItemDetails({ cartItem, loadCart }) {
         </div>
         <div className="product-quantity">
           <span>
-            Quantity: { isUpdating ? <input type="text" className="quantity-text-box" value={quantity} onChange={(event) => {setQuantity(event.target.value)}}/> : <span className="quantity-label">{cartItem.quantity}</span> }
+            Quantity: { isUpdating ? <input type="text" className="quantity-text-box" onKeyDown={
+              (event) => {
+                if (event.key === 'Enter'){
+                switchIsUpdating();
+                }
+                else if (event.key === 'Escape'){
+                  setQuantity(cartItem.quantity);
+                  setIsUpdating(false);
+                }
+              }
+            } 
+            value={quantity} 
+            onChange={
+              (event) => {
+                setQuantity(event.target.value)
+                }}/> : <span className="quantity-label">{cartItem.quantity}</span> 
+            }
           </span>
           <span className="update-quantity-link link-primary" onClick={switchIsUpdating}>
             Update
